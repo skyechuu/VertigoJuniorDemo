@@ -43,6 +43,7 @@ public class SpawnManager : MonoBehaviour
         GetSpawnPointsByDistanceSpawning(ref spawnPoints);
         if (spawnPoints.Count <= 0)
         {
+            Debug.Log("No spawn point suitable by enemy information. Spawn point selecting by squad spawning...");
             GetSpawnPointsBySquadSpawning(team, ref spawnPoints);
         }
         SpawnPoint spawnPoint = spawnPoints.Count <= 1 ? spawnPoints[0] : spawnPoints[_random.Next(0, (int)((float)spawnPoints.Count * .5f))];
@@ -61,6 +62,8 @@ public class SpawnManager : MonoBehaviour
             suitableSpawnPoints = new List<SpawnPoint>();
         }
         suitableSpawnPoints.Clear();
+
+        // paylasimli spawn noktalarini rakip takim uyelerine olan uzakliga gore yakindan uzaga siralar
         _sharedSpawnPoints.Sort(delegate (SpawnPoint a, SpawnPoint b)
         {
             if (a.DistanceToClosestEnemy == b.DistanceToClosestEnemy)
@@ -73,10 +76,12 @@ public class SpawnManager : MonoBehaviour
             }
             return -1;
         });
+
         for (int i = 0; i < _sharedSpawnPoints.Count; i++)
         {
             if (_sharedSpawnPoints[i].DistanceToClosestEnemy > _minDistanceToClosestEnemy)
             {
+                // minimum mesafe degerinden buyuk ve yakin zamanda kullanilmamis bir spawn point ise uygun listeye ekle 
                 if (!(_sharedSpawnPoints[i].DistanceToClosestFriend <= _minMemberDistance) && !(_sharedSpawnPoints[i].DistanceToClosestEnemy <= _minMemberDistance) && _sharedSpawnPoints[i].SpawnTimer <= 0)
                 {
                     suitableSpawnPoints.Add(_sharedSpawnPoints[i]);

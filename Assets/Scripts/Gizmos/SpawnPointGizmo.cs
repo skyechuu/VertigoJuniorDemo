@@ -15,6 +15,7 @@ public class SpawnPointGizmo : MonoBehaviour
     [SerializeField] private Color _color;
 	void OnDrawGizmos()
 	{
+        // Gizmo rengini, Spawn point kullanima acik ise yesil, degil ise kirmizi renge set et.
         if (spawnPoint)
         {
             if (spawnPoint.SpawnTimer <= 0)
